@@ -195,6 +195,8 @@ class MyGame(arcade.Window):
 
             # Might be a stack of cards, get the top one
             primary_card = cards[-1]
+            # Figure out what pile the card is in
+            pile_index = self.get_pile_for_card(primary_card)
 
             # All other cases, grab the face-up card we are clicking on
             self.held_cards = [primary_card]
@@ -202,6 +204,14 @@ class MyGame(arcade.Window):
             self.held_cards_original_position = [self.held_cards[0].position]
             # Put on top in drawing order
             self.pull_to_top(self.held_cards[0])
+
+            # Is this a stack of cards? If so, grab the other cards too
+            card_index = self.piles[pile_index].index(primary_card)
+            for i in range(card_index + 1, len(self.piles[pile_index])):
+                card = self.piles[pile_index][i]
+                self.held_cards.append(card)
+                self.held_cards_original_position.append(card.position)
+                self.pull_to_top(card)
 
     def remove_card_from_pile(self, card):
         """ Remove card from whatever pile it was in. """
