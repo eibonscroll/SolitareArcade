@@ -3,66 +3,8 @@ Solitaire clone.
 """
 import random
 import arcade
+import constants as cst
 
-# Screen title and size
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
-SCREEN_TITLE = "Drag and Drop Cards"
-
-# Constants for sizing
-CARD_SCALE = 0.6
-
-# How big are the cards?
-CARD_WIDTH = 140 * CARD_SCALE
-CARD_HEIGHT = 190 * CARD_SCALE
-
-# How big is the mat we'll place the card on?
-MAT_PERCENT_OVERSIZE = 1.25
-MAT_HEIGHT = int(CARD_HEIGHT * MAT_PERCENT_OVERSIZE)
-MAT_WIDTH = int(CARD_WIDTH * MAT_PERCENT_OVERSIZE)
-
-# How much space do we leave as a gap between the mats?
-# Done as a percent of the mat size.
-VERTICAL_MARGIN_PERCENT = 0.10
-HORIZONTAL_MARGIN_PERCENT = 0.10
-
-# The Y of the bottom row (2 piles)
-BOTTOM_Y = MAT_HEIGHT / 2 + MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
-
-# The X of where to start putting things on the left side
-START_X = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
-
-# The Y of the top row (4 piles)
-TOP_Y = SCREEN_HEIGHT - MAT_HEIGHT / 2 - MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
-
-# The Y of the middle row (7 piles)
-MIDDLE_Y = TOP_Y - MAT_HEIGHT - MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
-
-# How far apart each pile goes
-X_SPACING = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
-
-# Card constants
-CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
-CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
-
-# If we fan out cards stacked on each other, how far apart to fan them?
-CARD_VERTICAL_OFFSET = CARD_HEIGHT * CARD_SCALE * 0.3
-
-# Constants that represent "what pile is what" for the game
-PILE_COUNT = 13
-BOTTOM_FACE_DOWN_PILE = 0
-BOTTOM_FACE_UP_PILE = 1
-PLAY_PILE_1 = 2
-PLAY_PILE_2 = 3
-PLAY_PILE_3 = 4
-PLAY_PILE_4 = 5
-PLAY_PILE_5 = 6
-PLAY_PILE_6 = 7
-PLAY_PILE_7 = 8
-TOP_PILE_1 = 9
-TOP_PILE_2 = 10
-TOP_PILE_3 = 11
-TOP_PILE_4 = 12
 
 
 class Card(arcade.Sprite):
@@ -86,7 +28,7 @@ class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(cst.SCREEN_WIDTH, cst.SCREEN_HEIGHT, cst.SCREEN_TITLE)
 
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
@@ -122,24 +64,24 @@ class MyGame(arcade.Window):
         self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
 
         # Create the mats for the bottom face down and face up piles
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-        pile.position = START_X, BOTTOM_Y
+        pile = arcade.SpriteSolidColor(cst.MAT_WIDTH, cst.MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = cst.START_X, cst.BOTTOM_Y
         self.pile_mat_list.append(pile)
 
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-        pile.position = START_X + X_SPACING, BOTTOM_Y
+        pile = arcade.SpriteSolidColor(cst.MAT_WIDTH, cst.MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = cst.START_X + cst.X_SPACING, cst.BOTTOM_Y
         self.pile_mat_list.append(pile)
 
         # Create the seven middle piles
         for i in range(7):
-            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-            pile.position = START_X + i * X_SPACING, MIDDLE_Y
+            pile = arcade.SpriteSolidColor(cst.MAT_WIDTH, cst.MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = cst.START_X + i * cst.X_SPACING, cst.MIDDLE_Y
             self.pile_mat_list.append(pile)
 
         # Create the top "play" piles
         for i in range(4):
-            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-            pile.position = START_X + i * X_SPACING, TOP_Y
+            pile = arcade.SpriteSolidColor(cst.MAT_WIDTH, cst.MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = cst.START_X + i * cst.X_SPACING, cst.TOP_Y
             self.pile_mat_list.append(pile)
 
         # --- Create, shuffle, and deal the cards
@@ -148,10 +90,10 @@ class MyGame(arcade.Window):
         self.card_list = arcade.SpriteList()
 
         # Create every card
-        for card_suit in CARD_SUITS:
-            for card_value in CARD_VALUES:
-                card = Card(card_suit, card_value, CARD_SCALE)
-                card.position = START_X, BOTTOM_Y
+        for card_suit in cst.CARD_SUITS:
+            for card_value in cst.CARD_VALUES:
+                card = Card(card_suit, card_value, cst.CARD_SCALE)
+                card.position = cst.START_X, cst.BOTTOM_Y
                 self.card_list.append(card)
 
         # Shuffle the cards
@@ -160,11 +102,11 @@ class MyGame(arcade.Window):
             self.card_list.swap(pos1, pos2)
 
         # Create a list of lists, each holds a pile of cards.
-        self.piles = [[] for _ in range(PILE_COUNT)]
+        self.piles = [[] for _ in range(cst.PILE_COUNT)]
 
         # Put all the cards in the bottom face-down pile
         for card in self.card_list:
-            self.piles[BOTTOM_FACE_DOWN_PILE].append(card)
+            self.piles[cst.BOTTOM_FACE_DOWN_PILE].append(card)
 
     def on_draw(self):
         """ Render the screen. """
@@ -255,20 +197,20 @@ class MyGame(arcade.Window):
                 pass
 
             # Is it on a middle play pile?
-            elif PLAY_PILE_1 <= pile_index <= PLAY_PILE_7:
+            elif cst.PLAY_PILE_1 <= pile_index <= cst.PLAY_PILE_7:
                 # Are there already cards there?
                 if len(self.piles[pile_index]) > 0:
                     # Move cards to proper position
                     top_card = self.piles[pile_index][-1]
                     for i, dropped_card in enumerate(self.held_cards):
                         dropped_card.position = top_card.center_x, \
-                                                top_card.center_y - CARD_VERTICAL_OFFSET * (i + 1)
+                                                top_card.center_y - cst.CARD_VERTICAL_OFFSET * (i + 1)
                 else:
                     # Are there no cards in the middle play pile?
                     for i, dropped_card in enumerate(self.held_cards):
                         # Move cards to proper position
                         dropped_card.position = pile.center_x, \
-                                                pile.center_y - CARD_VERTICAL_OFFSET * i
+                                                pile.center_y - cst.CARD_VERTICAL_OFFSET * i
 
                 for card in self.held_cards:
                     # Cards are in the right position, but we need to move them to the right list
@@ -278,7 +220,7 @@ class MyGame(arcade.Window):
                 reset_position = False
 
             # Release on top play pile? And only one card held?
-            elif TOP_PILE_1 <= pile_index <= TOP_PILE_4 and len(self.held_cards) == 1:
+            elif cst.TOP_PILE_1 <= pile_index <= cst.TOP_PILE_4 and len(self.held_cards) == 1:
                 # Move position of card to pile
                 self.held_cards[0].position = pile.position
                 # Move card to card list
